@@ -203,9 +203,12 @@ footer {
 /* ===== Image Citing ===== */
 .image-cite-wrapper {
   position: relative;
-  display: inline-block;
-  margin: 5px auto;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 40px auto;
 }
+
 
 .image-cite-wrapper img {
   display: block;
@@ -236,7 +239,8 @@ footer {
 
 .image-cite-wrapper iframe {
   width: 100%;
-  height: 405px;
+  aspect-ratio: 16 / 9;
+  height: auto;
   border: none;
   border-radius: 10px;
   display: block;
