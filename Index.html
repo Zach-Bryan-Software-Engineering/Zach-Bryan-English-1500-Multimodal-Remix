@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Climb to the Top – Zach Bryan Narrative</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0d0f14;
+  color: #f1f1f1;
+}
+
+/* ===== HEADER ===== */
+header {
+  height: 60vh;
+  background:
+    linear-gradient(rgba(10,15,25,0.75), rgba(10,15,25,0.75)),
+    url("images/header-bg.jpg") center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 3.2rem;
+  margin: 0;
+}
+
+header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* ===== TIMELINE ===== */
+.timeline-container {
+  background: #111;
+  padding: 30px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.timeline-label {
+  text-align: center;
+  color: #5fd3ff;
+  letter-spacing: 5px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.timeline {
+  min-height: 60px;
+  max-width: 1000px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: #333;
+  top: 50%;
+}
+
+/* ===== GLOW ===== */
+.timeline::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--glow-x, 50%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  width: var(--glow-width, 200px);
+  height: var(--glow-height, 60px);
+  background: radial-gradient(
+    ellipse,
+    rgba(95,211,255,0.65),
+    rgba(95,211,255,0.25) 40%,
+    transparent 70%
+  );
+  opacity: var(--glow-opacity, 0);
+  transition: opacity 0.15s ease-out;
+}
+
+.point {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.point-circle {
+  width: 18px;
+  height: 18px;
+  background: #5fd3ff;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.point:hover .point-circle {
+  transform: scale(1.4);
+  background: #9ae7ff;
+}
+
+.tooltip {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1f2a;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+.point:hover .tooltip {
+  opacity: 1;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  max-width: 720px;
+  margin: 80px auto 120px;
+  padding: 0 20px;
+  min-height: calc(100vh - 140px);
+}
+
+.story {
+  display: none;
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+
+.story.active {
+  display: block;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.story h2 {
+  color: #5fd3ff;
+  font-size: 2.2rem;
+  margin-bottom: 25px;
+}
+
+.story p {
+  margin-bottom: 22px;
+  color: #e6e6e6;
+}
+
+.story img {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 40px auto;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 40px 20px;
+  background: #05070c;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.mla-citations {
+  max-width: 720px;
+  margin: 20px auto 0;
+  text-align: left;
+}
+
+.mla-citations p {
+  padding-left: 40px;
+  text-indent: -40px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  transition: background-color 0.4s ease;
+}
+
+.mla-citations p.highlight {
+  background: rgba(95,211,255,0.18);
+  border-radius: 6px;
+}
+
+/* ===== Image Citing ===== */
+.image-cite-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 5px auto;
+}
+
+.image-cite-wrapper img {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* White text, no background */
+.cite-overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+
+  color: #ffffff;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+/* Show only on hover */
+.image-cite-wrapper:hover .cite-overlay {
+  opacity: 0.9;
+}
+
+.image-cite-wrapper video {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 10px;
+  display: block;
+}
+.story-divider {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 60px 0 40px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>The Climb to the Top</h1>
+  <p>Zach Bryan Narrative</p>
+</header>
+
+<!-- TIMELINE -->
+<div class="timeline-container">
+  <div class="timeline-label">TIMELINE</div>
+  <div class="timeline">
+    <div class="point" onclick="showStory('auditions')"><div class="tooltip">Auditions</div><div class="point-circle"></div></div>
+    <div class="point" onclick="showStory('rumors')"><div class="tooltip">Rumors</div><div class="point-circle"></div></div>
+    <div class="point" onclick="showStory('humiliation')"><div class="tooltip">Humiliation</div><div class="point-circle"></div></div>
+    <div class="point" onclick="showStory('growth')"><div class="tooltip">Growth</div><div class="point-circle"></div></div>
+    <div class="point" onclick="showStory('valleyfest')"><div class="tooltip">Valleyfest</div><div class="point-circle"></div></div>
+    <div class="point" onclick="showStory('reflection')"><div class="tooltip">Reflection</div><div class="point-circle"></div></div>
+  </div>
+</div>
+
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div id="auditions" class="story active">
+    <h2>Auditions – May 2025</h2>
+    <p>
+      In life, we are always told to achieve more so we may rise to the top.
+      But what happens when you finally reach it? My senior year on the drumline
+      began with auditions, and to outsiders, they determined whether you made
+      the drumline at all. To us drummers, auditions decided our position—our
+      skill level. For years, I had been stuck in third place, and I had one
+      simple goal: to finally become second.
+    </p>
+	
+	<div class="image-cite-wrapper">
+	  <img src="images/auditions.png"
+		   alt="Auditions"
+		   class="cite-image"
+		   data-cite="cite-auditions">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+
+
+    <p>
+      I practiced for hours, pushing myself harder than ever, believing this
+      would finally be my year. When the results came out, nothing had changed.
+      I was still third, and what made it worse was that second place went to a
+      new guy who had just moved here. All the work I had put in felt invisible.
+    </p>
+    
+	<div class="image-cite-wrapper">
+	  <img src="images/results.png"
+		   alt="Results"
+		   class="cite-image"
+		   data-cite="cite-results">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+
+  </div>
+
+  <div id="rumors" class="story">
+    <h2>Camping Trip & Rumors</h2>
+    <p>
+      Later that day, we left for a preplanned drumline camping trip. Everyone
+      tried to comfort me, telling me I deserved the spot and reminding me that
+      third was still close to the center snare. While the words were kind, they
+      were not the truth I needed.
+    </p>
+    <p>
+      The next day, while volunteering for our center snare’s Eagle Scout project,
+      the conversation shifted from my placement to rumors surrounding the new guy.
+      He had rumors that made some female drummers uncomfortable. Someone suggested
+      speaking to the directors about switching positions so he wouldn’t stand next
+      to her. I agreed—partly because it was the right thing to do, but also because
+      it meant I might finally move up, even if not through skill, but circumstance.
+    </p>
+    <div class="image-cite-wrapper">
+	  <img src="images/camping.png"
+		   alt="Camping trip"
+		   class="cite-image"
+		   data-cite="cite-camping">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+  </div>
+
+  <div id="humiliation" class="story">
+    <h2>Humiliation at Rehearsal</h2>
+    <p>
+      At our first rehearsal, the plan began to unfold. The female snare was moved,
+      but instead of switching with the new guy, I was switched with her. I was given
+      no explanation, and it felt as if my drum tech was avoiding me entirely.
+    </p>
+	<div class="image-cite-wrapper">
+	  <img src="images/ignored.png"
+		   alt="Performer attempting to get attention during rehearsal"
+		   class="cite-image"
+		   data-cite="cite-ignored">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+    <p>
+      When I finally asked why, his answer felt like nonsense. I could see through
+      his gentle words to what he truly meant: they saw potential in him, not in me.
+      For the first time in my life, I felt completely humiliated.
+    </p>
+    <div class="image-cite-wrapper">
+	  <img src="images/humiliated.png"
+		   alt="Performer walking through a hall while being observed"
+		   class="cite-image"
+		   data-cite="cite-humiliated">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+
+  </div>
+
+  <div id="growth" class="story">
+    <h2>Learning to Let Go</h2>
+    <p>
+      After rehearsal, I left without speaking. As I packed up, others watched me
+      with quiet sympathy. As I ran off, our center snare followed me and stopped me.
+      He said something simple but powerful: “You love this drumline. Don’t let this
+      ruin your last season.” I didn’t realize it then, but those words stayed with me.
+    </p>
+	<div class="image-cite-wrapper">
+	  <img src="images/discussion.png"
+		   alt="Two performers speaking in a parking lot behind a brick building at night"
+		   class="cite-image"
+		   data-cite="cite-discussion">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+
+    <p>
+      As the season went on, the pain of being the lowest-ranked snare slowly faded.
+      I loved drumming and being around this group too much to stay angry. Over time,
+      I realized what our drum tech did—what once felt like nonsense—was actually a
+      logical masterpiece that helped the entire line succeed.
+    </p>
+    <div class="image-cite-wrapper">
+	  <img src="images/talking.png"
+		   alt="Silhouettes of drummers talking together"
+		   class="cite-image"
+		   data-cite="cite-talking">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+  </div>
+
+  <div id="valleyfest" class="story">
+    <h2>Valleyfest</h2>
+    <p>
+      Our year moved quickly, and not only was our sound clean, but we placed near
+      the top at every competition. Still, I wasn’t satisfied. For years, I had one
+      goal: to earn Best Percussion at Valleyfest, Iowa’s biggest competition—a title
+      always won by Roosevelt.
+    </p>
+    <p>
+      Leading up to Valleyfest, I made it my mission to inspire the drumline. I may
+      not have been the best player, but I could get the best out of others. On the
+      day of the competition, our performance was perfect. When the award was
+      announced—“Outstanding Percussion goes to Waukee Warrior Regiment”—we screamed.
+      For us, this wasn’t just an award. It was the top we had worked years to reach.
+    </p>
+    <div class="image-cite-wrapper">
+	  <img src="images/winning.png"
+		   alt="Silhouettes of drummers celebrating with an award"
+		   class="cite-image"
+		   data-cite="cite-winning">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+  </div>
+
+  <div id="reflection" class="story">
+    <h2>Reflection at the Top</h2>
+    <p>
+      That night, we won three awards and made history at Waukee High School. Our
+      performance was the cleanest drumline show Valleyfest had seen in years, and
+      judges even reached out to congratulate our drum tech.
+    </p>
+    <p>
+      I learned something important that night. I wanted the first win badly, but I
+      enjoyed the process more than the award itself. Standing at the top, I didn’t
+      worry about being beaten—I reflected on how far we had come. I was proud that
+      we made it.
+    </p>
+	<hr class="story-divider">
+	<p class="context-note">
+	  This story is based on a personal experience. The video below shows our drumline’s
+	  winning performance at Valleyfest, along with a photograph of the drumline,
+	  capturing the moment that represented years of effort and growth.
+	</p>
+
+	
+	<div class="image-cite-wrapper">
+	  <iframe
+		src="https://www.youtube.com/watch?v=EClWFpG9ujM"
+		title="Waukee Warrior Regiment Drumline Performance at Valleyfest"
+		allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+		allowfullscreen>
+	  </iframe>
+
+	  <span class="cite-overlay">Watch our drumline perform</span>
+	</div>
+
+
+
+	<div class="image-cite-wrapper">
+	  <img src="images/groupPhoto.jpg"
+		   alt="Waukee 2024 drumline with awards at Valley Stadium"
+		   class="cite-image"
+		   data-cite="cite-groupPhoto">
+
+	  <span class="cite-overlay">Click image to see citation</span>
+	</div>
+
+
+
+
+
+  </div>
+
+</div>
+<footer>
+<p>© 2026 Zach Bryan – English 1500</p>
+<p>Work Cited</p>
+<div class="mla-citations">
+<p id="cite-auditions">Bryan, Zach. <em>Silhouette of a Performer Standing Before a Snare Drum During Auditions</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-results">Bryan, Zach. <em>Silhouette of a Performer Reading Audition Results on Paper</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-camping">Bryan, Zach. <em>Silhouette of a Performer Observing a Campfire Circle During a Drumline Camping Trip</em>. Generated with AI image generation, 2026. </p>
+<p id="cite-ignored">Bryan, Zach. <em>Silhouette of a Performer Attempting to Gain Attention During a Drumline Rehearsal</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-humiliated">Bryan, Zach. <em>Silhouette of a Performer Walking Through a Hall While Observed by a Drumline Group</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-discussion">Bryan, Zach. <em>Silhouette of Two Performers Speaking in a Parking Lot Behind a Brick Building at Night</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-talking">Bryan, Zach. <em>Silhouettes of Drummers Socializing Together During Rehearsal</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-winning">Bryan, Zach. <em>Silhouette of a Performer Raising a Percussion Award While Surrounded by Fellow Drummers</em>. Generated with AI image generation, 2026.</p>
+<p id="cite-winning">Snyder, Kathi. <em>Waukee Warrior Regiment Drumline Performance at Valleyfest</em>. 2026. Personal video recording. Used with permission.</p>
+<p id="cite-groupPhoto">Bryan, Zach. <em>Waukee 2024 Drumline with Awards at Valley Stadium</em>. 2024.Personal photograph.</p>
+</p>
+
+</div>
+</footer>
+
+<script>
+function showStory(id) {
+  document.querySelectorAll('.story').forEach(s => s.classList.remove('active'));
+  const story = document.getElementById(id);
+  story.classList.add('active');
+
+  const timeline = document.querySelector('.timeline-container');
+  const storyTop = story.getBoundingClientRect().top + window.pageYOffset;
+
+  window.scrollTo({
+    top: storyTop - timeline.offsetHeight - 20,
+    behavior: 'smooth'
+  });
+}
+
+// Timeline glow
+document.addEventListener('DOMContentLoaded', () => {
+  const timeline = document.querySelector('.timeline');
+  if (!timeline) return;
+
+  function updateGlow() {
+    timeline.style.setProperty('--glow-width', `${timeline.offsetWidth / 3}px`);
+    timeline.style.setProperty('--glow-height', '30px');
+  }
+  updateGlow();
+  window.addEventListener('resize', updateGlow);
+
+  timeline.addEventListener('mousemove', e => {
+    const r = timeline.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = Math.abs(e.clientY - (r.top + r.height / 2));
+    const intensity = Math.max(0, 1 - y / 80);
+    timeline.style.setProperty('--glow-x', `${x}px`);
+    timeline.style.setProperty('--glow-opacity', intensity);
+  });
+
+  timeline.addEventListener('mouseleave', () =>
+    timeline.style.setProperty('--glow-opacity', 0)
+  );
+});
+
+
+// Image → citation interaction (CLICK ONLY)
+document.querySelectorAll('.cite-image').forEach(img => {
+  img.addEventListener('click', () => {
+    const citation = document.getElementById(img.dataset.cite);
+    if (!citation) return;
+
+    citation.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+
+    citation.classList.add('highlight');
+    setTimeout(() => citation.classList.remove('highlight'), 2000);
+  });
+});
+
+</script>
+
+</body>
+</html>
